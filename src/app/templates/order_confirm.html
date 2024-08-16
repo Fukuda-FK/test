@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注文確認 - ECサイト</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            font-weight: bold;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>注文確認</h1>
+    
+    <h2>注文内容</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>商品名</th>
+                <th>単価</th>
+                <th>数量</th>
+                <th>小計</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>¥{{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>¥{{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="total">
+                <td colspan="3">合計</td>
+                <td>¥{{ total_amount }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <h2>配送先情報</h2>
+    <p>
+        〒{{ shipping_info.postal_code }}<br>
+        {{ shipping_info.address }}<br>
+        {{ shipping_info.name }} 様
+    </p>
+
+    <h2>支払い方法</h2>
+    <p>{{ payment_method }}</p>
+
+    <form action="{{ url_for('complete_order') }}" method="post">
+        <input type="hidden" name="order_id" value="{{ order_id }}">
+        <button type="submit" class="button">注文を確定する</button>
+    </form>
+
+    <p><a href="{{ url_for('cart') }}">カートに戻る</a></p>
+</body>
+</html>

@@ -1,0 +1,118 @@
+以下に、要件に基づいたCloudFormationテンプレートを作成しました。このテンプレートは、EC2インスタンス、RDSインスタンス、セキュリティグループ、およびその他の必要なリソースを定義しています。
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'EC Site Infrastructure'
+
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  DBUsername:
+    NoEcho: 'true'
+    Description: Username for MySQL database access
+    Type: String
+    MinLength: '1'
+    MaxLength: '16'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  DBPassword:
+    NoEcho: 'true'
+    Description: Password for MySQL database access
+    Type: String
+    MinLength: '8'
+    MaxLength: '41'
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: must contain only alphanumeric characters.
+
+Resources:
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access and HTTP from the internet
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  DBSecurityGroup:
+    Type: AWS::RDS::DBSecurityGroup
+    Properties:
+      GroupDescription: Frontend Access
+      DBSecurityGroupIngress:
+        - EC2SecurityGroupName: !Ref EC2SecurityGroup
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroups: [!Ref 'EC2SecurityGroup']
+      KeyName: !Ref 'KeyName'
+      ImageId: ami-0cff7528ff583bf9a  # Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          yum install -y python3 python3-pip git
+          pip3 install flask pymysql
+          git clone https://github.com/your-repo/ec-site.git /home/ec2-user/ec-site
+          cd /home/ec2-user/ec-site
+          pip3 install -r requirements.txt
+          python3 src/app/__init__.py
+
+  RDSInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBName: ecsite
+      Engine: MySQL
+      MasterUsername: !Ref 'DBUsername'
+      MasterUserPassword: !Ref 'DBPassword'
+      DBInstanceClass: db.t2.micro
+      AllocatedStorage: '20'
+      PubliclyAccessible: 'false'
+      DBSecurityGroups:
+        - !Ref 'DBSecurityGroup'
+
+Outputs:
+  WebsiteURL:
+    Description: URL for newly created EC site
+    Value: !Sub 'http://${EC2Instance.PublicDnsName}'
+  RDSEndpoint:
+    Description: Endpoint for RDS instance
+    Value: !GetAtt 'RDSInstance.Endpoint.Address'
+
+このテンプレートには以下の主要コンポーネントが含まれています：
+
+1. パラメータ：
+   - KeyName: EC2インスタンスにSSHアクセスするためのキーペア
+   - DBUsername: RDSインスタンスのデータベースユーザー名
+   - DBPassword: RDSインスタンスのデータベースパスワード
+
+2. EC2セキュリティグループ：
+   - SSHアクセス（ポート22）とHTTPアクセス（ポート80）を許可
+
+3. DBセキュリティグループ：
+   - EC2インスタンスからのアクセスを許可
+
+4. EC2インスタンス：
+   - t2.microインスタンスタイプ
+   - Amazon Linux 2 AMI
+   - UserDataスクリプトで必要なソフトウェアをインストールし、アプリケーションを起動
+
+5. RDSインスタンス：
+   - MySQL エンジン
+   - db.t2.microインスタンスクラス
+   - 20GB のストレージ
+
+6. 出力：
+   - WebサイトのURL
+   - RDSインスタンスのエンドポイント
+
+このテンプレートを使用して、AWSコンソールまたはAWS CLIからスタックを作成できます。スタックの作成時に、KeyName、DBUsername、DBPasswordのパラメータを指定する必要があります。
+
+注意：このテンプレートはサンプルであり、実際の使用には追加のセキュリティ設定やカスタマイズが必要になる場合があります。また、GitHubリポジトリのURLは実際のものに置き換える必要があります。

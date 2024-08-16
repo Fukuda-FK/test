@@ -1,0 +1,22 @@
+# Web Framework
+Flask==2.1.0
+
+# Database
+SQLAlchemy==1.4.31
+PyMySQL==1.0.2
+
+# Testing
+pytest==7.1.2
+
+# AWS
+boto3==1.21.32
+
+# Security
+Flask-WTF==1.0.1
+Flask-Login==0.6.0
+
+# Utilities
+python-dotenv==0.20.0
+
+# WSGI HTTP Server
+gunicorn==20.1.0

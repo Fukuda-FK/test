@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品一覧 - ECサイト</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .product-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+        }
+        .product-item img {
+            max-width: 100%;
+            height: auto;
+        }
+        .product-name {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .product-price {
+            color: #007bff;
+            font-size: 1.1em;
+        }
+        .add-to-cart {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>商品一覧</h1>
+    
+    <div class="product-list">
+        {% for product in products %}
+        <div class="product-item">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-price">¥{{ product.price }}</div>
+            <button class="add-to-cart" data-product-id="{{ product.id }}">カートに追加</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // カートに追加するための簡単なJavaScript
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                alert('商品ID: ' + productId + ' をカートに追加しました。');
+                // ここで実際のカート追加処理を行う（APIリクエストなど）
+            });
+        });
+    </script>
+</body>
+</html>
+

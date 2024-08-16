@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECサイト - トップページ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+        }
+        nav {
+            background-color: #f4f4f4;
+            padding: 0.5rem;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+        }
+        main {
+            padding: 2rem;
+        }
+        .featured-products {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .product {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin: 1rem;
+            width: 200px;
+            text-align: center;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ECサイト</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="/">ホーム</a></li>
+            <li><a href="/products">商品一覧</a></li>
+            <li><a href="/cart">カート</a></li>
+            <li><a href="/orders">注文履歴</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>おすすめ商品</h2>
+        <div class="featured-products">
+            <div class="product">
+                <h3>商品1</h3>
+                <p>価格: ¥1,000</p>
+                <button>カートに追加</button>
+            </div>
+            <div class="product">
+                <h3>商品2</h3>
+                <p>価格: ¥2,000</p>
+                <button>カートに追加</button>
+            </div>
+            <div class="product">
+                <h3>商品3</h3>
+                <p>価格: ¥3,000</p>
+                <button>カートに追加</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 ECサイト. All rights reserved.</p>
+    </footer>
+</body>
+</html>
